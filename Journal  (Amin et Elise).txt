@@ -1,0 +1,102 @@
+16 octobre 2014
+
+Objet : Première réunion avec Mertens - Introduction du projet
+
+- Contextualisation du projet
+Le projet se base sur une technique de détection du cancer colorectal. En tenant compte des différents types de polypes, les mesures sur leur dimension permet de nous indiquer s'il existe un risque de cancer colorectal.
+
+- Présentation des outils disponibles avec lequels nous travaillerons
+Mertens nous a fourni des documents donnant diverses informations sur le cancer colorectal telles que les techniques de détectage, les types de traitement, la pertinence des mesures des polypes in vivo,...
+Il serait intéressant des les lire plus attentivement afin de nous informer plus précisément sur le contexte du projet mais également pour vérifier la pertinence des futurs résultats obtenus ou pour de futures optimisations.
+Pour le commencement du projet, nous nous contenterons de la thèse de Mertens et du document sur la classification de Paris afin de différencier les différents types de polypes.
+
+Nous nous baserons sur les codes de Mertens qui permettent d'acquérir les vidéos d'endoscopie et d'en déduire le profil des points (longueur+profondeur) à partir du système à laser (sour forme de graphe et sous forme de valeurs en fichier txt).
+Une des premières étapes du projet consistera à déterminer d'autres dimensions du polype telles que le diamètre. Les prochaines étapes se dirigeront vers la classification des polypes et l'automatisation de la détection du polype sur l'image.
+
+Mertens nous a donné le choix pour le langage de programmation. Nous avons choisi de travailler en Python, celui-ci étant un langage avec lequel nous sommes assez familiers.
+De plus, celui-ci possède des méthodes qui sont présentées lors du cours d'imagerie et qui pourraient nous être utiles dans le cadre de ce projet.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+23 octobre 2014
+
+Objet : Réunion avec Mertens - Expérience avec endoscope
+
+- Acquisition de la vidéo
+Mertens nous a montré l'endoscope accompagné d'un système avec laser. Cela nous permet, en plus de visionner l'intérieur du colon (en plastique lors de l'expérience), de faire des mesures via l'acquisition de points.
+Le calibrage du sytème nous a été montré (rem : Mertens voudrait qu'on en parle dans notre rapport, si besoin de plus d'infos, il suffit de regarder dans sa thèse).
+Nous avons fait l'acquisition de vidéos lors d'une endoscopie du colon contenant un polype pédiculé (colon et polype en plastique). Nous nous servirons de ces vidéos comme base pour traiter les images qui en seront extraites.
+Nous verros ultérieurement s'il est possible de se procurer d'autres vidéos d'endoscopie avec des polypes de types différents.
+
+Il est utile de savoir que le polype a une couleur différente par rapport aux parois du colon, nous pourrons donc jouer sur cette caractéristique lors du traitement de l'image.
+
+Mertens nous a conseillé Pythonxy comme logiciel, celui-ci comprenant déjà un grand nombre de modules et présentant une interface simple, similaire à Eclipse pour JAVA.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+31 octobre 2014
+
+Objet : Cahier des charges (dans les grandes lignes)
+
+Partie 1 : Calcul du diamètre d'un polype pédiculé
+A partir d'une capture du profil du polype (graphe + fichier txt), trouver un algorithme nous permettant de calculer le diamètre du polype.
+
+Partie 2 : Traitement sur des images de polype pédiculé
+-> Pré-traitement de l'image (filtres,...)
+-> Segmentation de l'image
+L'idée n'est pas seulement de détecter la présence du polype dans l'image mais la présence du laser sur le polype de l'image.
+-> Critère de détection du laser sur le polype
+Une fois l'image segmentée, il faut trouver un algorithme qui permet d'informer le programme la présence du laser sur le polype.
+Si la condition est respectée, alors il faudra permettre au programme de sélectionner les captures du profil correspondant à chaque "bonne image".
+Ensuite, il faudra sélectionner quels points du profil sont utiles afin de déterminer certaines dimensions telles que le diamètre.
+
+Partie 3 : Acquisition des images à partir d'une vidéo
+Ecrire un algorithme permettant de décomposer une vidéo en de nombreuses images. En plus de cela, il faudra chercher comment obtenir des captures de profil et les faire correspondre avec leur image respective.
+
+Partie 4 : Reconnaissance des différents types de polypes
+Détails à voir.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+12 novembre 2014
+
+Objet : Discussion sur partie 1 et partie 2 du cahier des charges
+
+Nous avons testé l'algorithme qui permet de calculer le diamètre à partir d'un arc de cercle sur plusieurs profils du polype. La sélection des extrémités de l'arc est manuelle.
+Il faudra que cette sélection se fasse automatiquemen si possible.
+
+D'autres tests de traitement d'image ont été effectués sur des images de polypes :
+-> Conversion en niveaux de gris
+-> Fitre médian
+-> Watershed
+Le watershed, suivi des autres traitements cités ci-dessus, nous permet une segmentation des images assez grossières. Dans certains cas, seule une partie du polype est mise en évidence.
+De plus, en attendant, les paramètres tels que les éléments structurants du gradient ou la valeur du seuil (voir analysis_polyp.py) ne peuventpas  être fixés correctement pour permettre un bon watershed pour un grand nombre d'images de polypes.
+Il faudrait donc appliquer d'autres traitements sur l'image avant de la segmenter.
+
+Différentes étapes pour le traitement de l'image ont été décidées :
+-> HSV de l'image (plus en niveaux de gris, mais sur le plan vert par exemple) (Amin)
+Sachant que le laser a une couleur prédominante verte, nous allons extraire le HSV de l'image.
+La teinte (hue) étant codée suivant un angle dont la valeur correspond à une certaine couleur (120° pour le vert), il suffit de détecter les pixels qui possèdent une teinte de 120° afin de déterminer les pixels correspondant au laser.
+Connaissant ces pixels, on va délimiter une région autour de ces pixels. L'intervalle autour de ces pixels sera choisi tel que la région délimitée comprendra le polype s'il est présent.
+
+Nous pourrions faire une transformation de Houth pour détecter la ligne du laser (ou plutôt les différentes lignes du laser car la ligne est parfois un peu déviée)
+mais la méthode par HSV nous permet d'obtenir les coordonnées des pixels du laser, ce qui nous sera utile pour la suite.
+
+-> Filtre médian
+-> Amélioration au niveau du contraste (à voir si nécessaire)
+Différentes manières possibles : égalisation (dont différentes méthodes), normalisation,..
+Une amélioration de contraste nous pertmettra d'avoir un meilleur gradient mais cela augmente le bruit.
+-> Watershed
+Nous allons ajouter une fermeture qui sera appliquée sur l'image binarisée afin de fermer les bords et permettre une bonne labelisation.
+-> Détection du polype après l'image segmentée
+Après l'image segmentée, nous allons en calculer la matrice de concurrence. Au lieu de calculer le niveau de couleur des voisins de chaque pixel, nous nous limiterons aux pixels appartenant au laser.
+En résumé : 	Après la segmentation, l'idéal serait d'avoir une image segmentée avec 3 voire 4 couleurs : 1 pour le fond, 1 pour le laser et 1 voire 2 pour le polype. 
+		En calculant la matrice de coocurrence des pixels du laser, on obtiendra idéalement une matrice avec 2 à 3 valeurs non nulles (niveau de couleur du laser  et celui du fond et du polype) et le reste des valeurs nulles.
+		Si le critère est respectée, alors cela signifie que nous avons bien une image  avec le laser sur le polype.
+
+
+
+
+
+
+
