@@ -1,0 +1,43 @@
+14/11
+
+Objet : suivi du laser afin de diminuer les risques de bruits
+
+En convertissant le matrice rgb de l'image en hsv, il est possible de detecter la couleur verte se trouvant sur 
+l'image initiale, le vert se trouve aux alentours de h =  0. 33. La couleur du laser restera la même 
+tout au long du projet, une valeure précise correspondant au vert du laser précisément est donc utilisé
+( on garde toute fois un seuil autour de cette valeur). Cette valeur seule ne suffit pas à discriminer
+correctement le laser du reste de l'image, des conditions sur le s et le v sont donc également posées
+afin de diminuer au maximum les parties parasites de l'image.
+
+Cecie étant fait, on agrandit la zone binarisée par le hsv de part et d'autre, le resultat obtenu constitue
+un modèle qui une fois multipliée par l'image de départ donne l'image qui sera analysée.
+
+Ces deux actions sont faites par les fonctions Detect_laser et tranche_image du fichier Fonction_Anlyse
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+15/11
+
+Objet : utiliser le suivi du laser afin de construire la matrice de coocurence autour des points du laser, 
+représentation graphique de la matrice
+
+l'image binarisée du laser obtenue par hsv ( l'image du laser seulement, pas du laser élargit !) est suivie, 
+et la différence avec le voisinage horizontale ( avec un certains facteur d'éloignement) est effectuée. 
+Ces différences sont stockées dans une liste au lieu d'une matrice, une matrice n'apportant rien de plus
+dans ce cas-ci, ceci permet de diminuer la compléxité des calculs. La fonction construisant cette liste
+est donnée par compte_occurences qui se trouve dans le fichier Fonction_Analyse. Cette liste est ensuite
+utilisée afin de ploter le nombre d'occurences en fonction des valeurs des occurences. 
+On observe en comparant le cas de l'image tranchée et l'image complète que l'image tranchée permet 
+d'obtenir un pic (représentat le polyp ?!) bien plus distinct. 
+Des fonctions Image_ws et Image_ws_tranche se trouvant toujours de le même fichier, effectuent l'entièrté
+du watershed y compris le contraste CLAHE. Ces 2 fonctions permettent de comparer les approches entièrté 
+de l'image et tranche d'image. 
+
+Il reste maintenant à affirmer de façon certaine que le pic secondaire obtenu par coocurrence représente
+bien le polype, si c'est le cas, il reste à tester de nombreux images différentes afin d'observer les
+résultats. Si les observations sont concluantes, le pic servira de signal à la présence d'un polyp
+
+---------------------------------------------------------------------------------------------------------------------
+
