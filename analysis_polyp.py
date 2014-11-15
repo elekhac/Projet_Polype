@@ -4,11 +4,12 @@
 import skimage
 from skimage.filter import rank as rank2
 import matplotlib.pyplot as plt
+import matplotlib.colors as col
 import numpy as np
 from skimage import data, exposure
 from skimage.morphology import disk,watershed,closing
 
-polDia = data.imread("vu_diametre_polyp02.png")
+polDia = data.imread("vu_diametre_polyp01.png")
 
 #Plot de l'image initiale
 
@@ -17,9 +18,40 @@ plt.title("Image initiale")
 plt.imshow(polDia)
 plt.colorbar()
 
+#detection du laser a l'aide du hsv
+
+hsv= col.rgb_to_hsv((polDia/255.0))
+
+laser = np.zeros(polDia.shape[:2])
+target=0.29 #green
+seuil=0.05 
+for i in range(laser.shape[0]):
+    for j in range(laser.shape[1]):
+        if abs(hsv[i,j,0] - target) < seuil and hsv[i,j,1]>0.2 and hsv[i,j,2]>0.1:
+            laser[i,j] = 1
+
+plt.subplot(3,3,9)
+plt.title("laser detecte par hsv")
+plt.imshow(laser)
+plt.colorbar()
+
+
+# determination de l intervalle autour du laser
+
+laser_copy = laser.copy()
+for i in range(252):
+    for j in range(315):
+        if laser[i,j] ==1 and j>60 and j<255:
+            for f in range(j-60,j+60):
+                laser_copy[i,f] =1
+
+
+
 #Transformation en image en niveau de gris
 
 polDia_g = skimage.color.rgb2gray(polDia)
+
+polDia_g = polDia_g * laser_copy
 
 plt.subplot(3,3,2)
 plt.title("Image en gris")
