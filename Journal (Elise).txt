@@ -1,0 +1,64 @@
+13/11
+
+Objet : Méthodes d'amélioration de contraste
+
+En observant l'histogramme d'une image de polype en gris, nous remarquons que :
+- les niveaux de gris les plus fréquents sont bas (moins de 150)
+- les niveaux de gris plus élevés sont moins fréquents car ils correspondent principalement aux niveaux de gris du laser.
+Les images en gris de polype sont donc généralement à contraste faible.
+Dans le fichier ContrastEnhancement.py, nous y trouvons 3 méthodes d'amélioration de contraste appliquées à une image en gris ainsi que les histogrammes obtenus.
+Nous avons testé les 3 méthodes les plus courantes : étirement de contraste, égalisation et égalisation adaptive à contraste limité (CLAHE).
+L'inconvénient des méthodes d'amélioration de contraste est qu'elles augmentent le bruit de l'image.
+
+http://scikit-image.org/docs/dev/auto_examples/plot_equalize.html
+
+- Etirement de contraste (contrast stretching)
+Cette méthode prend les niveaux de gris dans un intervalle défini par des percentiles et étire cet intervalle de niveaux.
+Une première idée était de prendre un intervalle où les niveaux de gris étaient fréquents (0-5 à 150 ce qu correspond à environ à 1% à 60% en percentiles).
+Cependant, lors de l'étirement, les fréquences sont étalées (leur valeur diminue). Ainsi, lorsqu'on étire un petit intervalle de niveaux, l'histogramme devient plat et cela ne donne pas un bon rendu de l'image.
+Une seconde idée était de prendre un intervalle grand, par exemple entre 1% et 99% et de faire l'étirement de contraste.
+Le rendu, au niveau de l'image et de l'histogramme, est assez bon.
+Problème : le laser après étirement augmente fortement de taille, ce qui pourrait poser problème lors du calcul de la matrice de coocurrence en suivant la ligne du laser (qui sera dès lors modifié par rapport à l'original).
+
+- Egalisation de l'histogramme
+Cette méthode prend automatiquement les niveaux de gris à plus haute fréquence et étire cet intervalle de niveaux (procédé similaire à la première idée de l'étirementde contraste)
+Problème : rendu moyen, on ne voit plus très bien le laser
+
+- CLAHE
+"Adaptive histogram equalization (AHE) is a computer image processing technique used to improve contrast in images.
+It differs from ordinary histogram equalization in the respect that the adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image.
+It is therefore suitable for improving the local contrast of an image and bringing out more detail.
+However, AHE has a tendency to overamplify noise in relatively homogeneous regions of an image. 
+A variant of adaptive histogram equalization called contrast limited adaptive histogram equalization (CLAHE) prevents this by limiting the amplification."
+
+http://en.wikipedia.org/wiki/Adaptive_histogram_equalization
+
+Le rendu est assez bon. Le laser reste fin
+Toutefois, cette méthode révèle des contrastes inutiles (ex. au niveau de la paroi) ce qui pourrait faire croire, lors du watershed, qu'on a des objets supplémentaires (pas trop grave vu que lors du calcul de la matrice de coocurrence, on suivra juste la ligne du laser).
+
+Meilleure méthode des 3 : CLAHE. A voir s'il faut nécessairement appliquer une amélioration de contraste avant la segmentation de l'image vu qu'elle augmente le bruit.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+14/11
+
+Objet : CLAHE lors du pré-traitement de l'image et fermeture sur l'image binarisée lors du ws
+
+Nous appliquons une fermeture sur l'image binarisée avant la labellisation. 
+Dans la plupart des cas, la fermeture ne change rien. Mais dans certains cas (ex. amélioration de contraste et/ou l'image de gradient et le seuillage ne sont pas assez précis), nous trouvons un petit point (blanc) en plus d'une zone de points blancs sur le même objet (ex. sur le laser).
+Nous obtenons donc une image avec un objet labellisé 2 fois au lieu d'1 fois. La fermeture permet de "fermer" ce point et d'avoir un label pour un objet.
+
+Problème : Cela marche lorsqu'on a peu de points blancs en trop. Dans certains cas, nous avons quasiment deux lignes blanches sur un même objet. Cess cas sont souvent fréquents sur l'objet "laser" en dehors du polype.
+Ainsi, lors du calcul de la matrice de coocurrence suivant la ligne du laser, nous aurons plus de valeurs non nulles que prévu.
+Concrètement, à cause de la déviation du laser, on a sur l'image 3 lignes de laser. Dans la matrice de coocurrence, on aura idéalement 3 valeurs non nulles (en plus des valeurs non nulles dû au polype).
+Si 1 des 3 lignes du laser est segmentée 2 fois, on aura 3 valeurs non nulles en plus
+Sol : diminuer clahe et/ ou augmenter filtre médian. A voir s'il n'existe pas d'autres solutions.
+
+En réglant les paramètres (contraste, filtre médian, gradient), nous pouvons obtenir une bonne segmentation pour certaines images de polype mais ce nombre reste limité.
+
+Problème : dans l'image binarisée, les bords du polype sont souvent incomplets donc le polype (ou 1 des 2 parties du polype) sera considéré comme le même objet que le fond.
+
+Solution : 	-  Travailler au niveau du pré-traitement de l'image
+		- Utiliser une autre méthode de détection de contour au lieu du gradient. Ex. Opérateur Sobel? Prewitt? Canny?
+
+http://fr.wikipedia.org/wiki/D%C3%A9tection_de_contours
