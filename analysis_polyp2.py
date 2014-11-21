@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import skimage
+import cv2
 from skimage.filter import rank as rank2
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
@@ -18,15 +19,21 @@ plt.title("Image initiale")
 plt.imshow(polDia)
 plt.colorbar()
 
+#application d'un masque rectangle sur l'image
+carre = np.zeros(polDia.shape[:2])
+for i in range(150,400):
+    for j in range(350,650):
+        carre[i,j] =1
+polDia = cv2.bitwise_and(polDia, polDia, mask = np.uint8(carre))
+
 #detection du laser a l'aide du hsv
+
 hsv= col.rgb_to_hsv((polDia/255.0))
 
 laser = np.zeros(polDia.shape[:2])
-target=0.29 #green
-seuil=0.05
-for i in range(laser.shape[0]):
-    for j in range(laser.shape[1]):
-        if abs(hsv[i,j,0] - target) < seuil and hsv[i,j,1]>0.2 and hsv[i,j,2]>0.1:
+for i in range(150,400):
+    for j in range(350,650):
+        if  hsv[i,j,1]<0.3 and hsv[i,j,2]>0.85:
             laser[i,j] = 1
 
 plt.subplot(3,3,9)
@@ -34,21 +41,29 @@ plt.title("laser detecte par hsv")
 plt.imshow(laser)
 plt.colorbar()
 
-# determination de l intervalle autour du laser
+# elargissement de la zone verticale par rapport au laser (seulement si on veut
+# un watershed du polype entier)
+zone = laser.copy()
+for i in range(150,400):
+    for j in range(350,650):
+        if laser[i,j] ==1:
+            for f in range(i-1,i+1):
+                zone[f,j] = 1
 
-laser_copy = laser.copy()
-for i in range(polDia.shape[0]):
-    for j in range(polDia.shape[1]):
-        if laser[i,j] ==1 and j>60 and j<polDia.shape[1]:
-            for f in range(j-60,j+60):
-                laser_copy[i,f] =1
+# determination de l intervalle horizontal autour du laser
+zone_copy = zone.copy()
+for i in range(150,400):
+    for j in range(350,650):
+        if zone[i,j] ==1 and j>80 and j<polDia.shape[1]:
+            for f in range(j-80,j+80):
+                zone_copy[i,f] =1
 
 
 #Transformation en image en niveau de gris
 
 polDia_g = skimage.color.rgb2gray(polDia)
 
-polDia_g = polDia_g * laser_copy
+polDia_g = polDia_g * zone_copy
 
 plt.subplot(3,3,2)
 plt.title("Image en gris")
@@ -70,7 +85,7 @@ type(polDia_med)
 
 # applique une normalisation adaptive a contraste limitee de l'histogramme
 # (CLAHE)
-polDia_clahe = exposure.equalize_adapthist(polDia_med, clip_limit=0.03)
+polDia_clahe = exposure.equalize_adapthist(polDia_med, clip_limit=0.02)
 polDia_clahe_stretch = exposure.rescale_intensity(polDia_clahe, out_range=(0, 256))
 #revient a faire polDia_clahe multiplie par 256
 
@@ -83,7 +98,7 @@ plt.colorbar()
 # applique un gradient sur l'image floutee : mise en evidence des changements
 #de niveau abrupt
 
-polDia_grad = rank2.gradient(polDia_clahe_stretch,disk(3))
+polDia_grad = rank2.gradient(polDia_med,disk(3))
 
 plt.subplot(3,3,5)
 plt.title("Suivi d'un filtre gradient")

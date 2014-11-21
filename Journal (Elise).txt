@@ -62,3 +62,29 @@ Solution : 	-  Travailler au niveau du pré-traitement de l'image
 		- Utiliser une autre méthode de détection de contour au lieu du gradient. Ex. Opérateur Sobel? Prewitt? Canny?
 
 http://fr.wikipedia.org/wiki/D%C3%A9tection_de_contours
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+21/11
+
+Objet : Découpe de l'image à analyser avant segmentation
+
+Avant tout, nous allons appliquer un masque rectangulaire sur l'image originale pour concentrer le traitement de l'image sur une plus petite zone. 
+Le masque est appliqué tel que le polype, si présent, soit toujours visible (normalement toujours assez centré).
+
+Précédémment, nous avons calculé le HSV de l'image et nous avons détecté la zone verte du laser via la composante H (teinte). 
+Cependant, lorsque le laser se pose sur le polype, nous remarquons que le laser tend parfois vers une couleur verte (H = environ 0,3) mais aussi vers une couleur blanche (H = environ 1).
+Il est donc difficile de trouver un critère sur la composante H pour déterminer le laser. Nous utiliserons donc les composantes S (saturation) et V (valeur). Ici, ce sera S<0,35 et V >0,85 (valeurs non définitives).
+Ces critères nous permettent d'identifier directement les pixels du laser sur le polype et pas le laser sur la paroi.
+
+Après avoir élargi la zone par rapport à ces pixels, nous appliquons une segmentation de l'image (watershed). 
+Lorsqu'on nous calculons les différences des niveaux des pixels du laser avec les pixels voisins, le graphe correspond à ce que l'image montre:
+- 2 pics lorsqu'on le laser est bien situé sur le polype (valeurs supérieures à 150-200)
+- pas de pic important lorsque le laser est sur les parois
+
+Cela marche pour une majorité des images.
+
+Rem :
+- Ici, nous avons concentré le traitement sur la zone du polype mais celle-ci étant déjà bien contrastée, nous n'avons pas appliqué de normalisation
+- Pour des images dans lesquelles le laser est sur les bords du polype (bords extérieur et intérieur) par exemple, on détecte 2 pics. Cependant, ces images ne sont pas intéressantes car le profil ne donnera pas grand chose.
+- A voir si le watershed est nécessaire. En effet, il permet d'avoir une couleur uniforme pour chaque objet mais nous avons déjà une bonne distinction des objets après le filtre médian
