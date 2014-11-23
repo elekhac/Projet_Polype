@@ -10,7 +10,7 @@ import numpy as np
 from skimage import data, exposure
 from skimage.morphology import disk,watershed,closing
 
-polDia = data.imread("images\\image57.png")
+polDia = data.imread("images\\image36.png")
 
 #Plot de l'image initiale
 

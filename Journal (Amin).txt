@@ -41,3 +41,14 @@ résultats. Si les observations sont concluantes, le pic servira de signal à la p
 
 ---------------------------------------------------------------------------------------------------------------------
 
+23/11
+
+Objet : Améliorer le suivi de l'analyse
+
+Tout les fichier graphs liés aux différentes images sont enregistrées dans un dossier appellé "graph_images", les 
+noms des graphs reprennent les noms des images qui lui correspondent. Ceci est fait grace au fichier "SaveGraphs.py".
+
+
+Une fois ceci fait, la fonction définie par "ComparisonTool.py" permet d'afficher côte-à-côte les images de polyps
+et le graph correspondant, en entrant simplement à la fonction le numéro de l'image.
+
