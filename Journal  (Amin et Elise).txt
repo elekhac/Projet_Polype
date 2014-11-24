@@ -96,6 +96,34 @@ En résumé : 	Après la segmentation, l'idéal serait d'avoir une image segmentée a
 
 
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+19 novembre 2014
+
+Objet : Réunion avancement avec Mertens
+
+Nous avons discuté de l'avancement du projet afin de vérifier si un changement radical de philosophie de travail était nécessaire.
+
+Afin d'accelerer et de faciliter l'analyse, nous avons décidé en accord avec Mertens d'appliquer un cadre manuel sur l'image et 
+d'imposer donc que le polyp doit s'y trouver, si il n'y est pas, il ne sera pas detecté. Ce cadre facilitera grandement
+l'analyse et la perception du polyp. Dans le cadre du projet aucune limite de quantité calculs n'est imposé, autant de filtres
+et de traitement sur l'image que nécessaire peuvent être appliqués.
+
+Mertens nous a indiqué un document concernant la detection de polyp à l'aide de couleur RGB qui pourrait être util :
+
+++++++
+
+Automatic lesion detection in capsule endoscopy based on color
+
+saliency: closer to an essential adjunct for reviewing software
+
+Dimitris K. Iakovidis, MSc, PhD,1 Anastasios Koulaouzidis, MD, FRCPE2
+
+
+++++++
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
