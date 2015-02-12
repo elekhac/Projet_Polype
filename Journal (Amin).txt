@@ -52,3 +52,25 @@ noms des graphs reprennent les noms des images qui lui correspondent. Ceci est f
 Une fois ceci fait, la fonction définie par "ComparisonTool.py" permet d'afficher côte-à-côte les images de polyps
 et le graph correspondant, en entrant simplement à la fonction le numéro de l'image.
 
+
+------------------------------------------------------------------------------------------------------------------
+
+08/02
+
+Objet : nouvelle méthode de discrimination du polype par rapport au fond
+
+Le laser est vert, le polyp est blanc, il est peut être possible de determiner s'il traverse le polyp on suivant
+le laser (hsv) et calculant la différence de couleur au bord du laser ( morphomat) . Une quantité minimale
+de nuance couleur_verte - couleur_blanche devrait être retrouvé .. Ce n'est pas le cas , le polyp n'est pas
+détéctable, le code n'est pas ajouté au git ...
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+10/02
+
+Objet : Test de la technique à base de région grandissante et ajout au code de Mertens
+
+L'analyse par région grandissante permet de detecter un laser traversant un polyp dans 80% des cas selon les test sur
+différents set d'images, le nombre de faux positif est semble-t-il nul, le nombre de faux-négatif est de 20%.
+L'analyse est ajouté au code de Mertens -> fonctionne mais ralentissement ...
