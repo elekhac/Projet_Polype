@@ -74,3 +74,32 @@ Objet : Test de la technique à base de région grandissante et ajout au code de M
 L'analyse par région grandissante permet de detecter un laser traversant un polyp dans 80% des cas selon les test sur
 différents set d'images, le nombre de faux positif est semble-t-il nul, le nombre de faux-négatif est de 20%.
 L'analyse est ajouté au code de Mertens -> fonctionne mais ralentissement ...
+
+------------------------------------------------------------------------------------------------------------------
+
+15/02
+
+http://docs.opencv.org/trunk/doc/py_tutorials/py_imgproc/py_watershed/py_watershed.html
+
+Essai Watershed différent basé sur un seuillage d'otsu .. inefficace
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+
+26/02
+
+Traitement de l'image par :
+
+- seuillage d'otsu ( background vs foreground)
+
+- detection laser hsv + tranche autour du laser
+
+- filetre median 
+
+- transformée de Hough pour detecter le polyp
+
+----> semble efficace !!!
+
+
+
