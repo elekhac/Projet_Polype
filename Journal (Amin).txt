@@ -99,6 +99,8 @@ Traitement de l'image par :
 
 - transformée de Hough pour detecter le polyp
 
+Fichier "Fonctions_Analyse_Hough" ajouté au git
+
 ----> semble efficace !!!
 
 
