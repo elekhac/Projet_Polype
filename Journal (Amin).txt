@@ -104,4 +104,12 @@ Fichier "Fonctions_Analyse_Hough" ajouté au git
 ----> semble efficace !!!
 
 
+----------------------------------------------------------------------------------------------------------------
+
+02/03
+
+Changement dans Fonctions_Analyse_Hough : afin de diminuer le temp de traitement, on utilise plus le laser avec hsv
+mais un carré prédefini à l'avance où on analyse l'image .
+
+Nouveau fichier appellé Fonctions_Analyse_Hough (2)
 
