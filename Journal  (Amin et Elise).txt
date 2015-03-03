@@ -126,5 +126,40 @@ Dimitris K. Iakovidis, MSc, PhD,1 Anastasios Koulaouzidis, MD, FRCPE2
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+02/03 2015
+
+Réunion Elise et Amin :
+
+- on detecte l'image potentielle + graph mais il faudrait ajouter un post-traitement ( en suivant le laser, pour être 
+sûr qu'il traverse le polyp)
+
+
+- pour trouver l'extremité du polyp : 2 options : 1 - intersection entre le gradient de l'image ( mettre en evidence
+							les bords du polyp) et le laser
+						  2 - intersection entre le cercle de Hough et le laser
+
+						  3 - Travailler sur le graph et les pentes
+
+
+- pour trouver l'orientation du polyp : comparer le cercle de Hough et le gradient de l'image ( si distance grande =>  hauteur, sinon diamètre)
+
+- On décide de lancer la video d'y trouver tout les polyp potentiel, puis d'appliquer les post traitments sur toutes ces images
+
+- Detecter d'autre type de polyps : - Méthodes trouvés dans la littérature ( mais regler le pb du laser ...)
+
+				    - Appliquer une transformée de Hough spécifique au type de polyp recherché
+
+				    - Méthode sift ( ensemble d'apprentissage ou pas ?)
+
+				    - Watershed ( fusion de bassins ? )
+
+
+
+
+
+Réunion avec Mertens :
+
+Discussion de l'avancement du projet === > c'est de la recherche : faire le mieux possible, mais il n'y a pas de miracles.
+
 
 
