@@ -9,6 +9,7 @@ import numpy as np
 import cv2 as cv2
 import matplotlib.colors as col
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 def Analyse_Hough(image):
@@ -23,7 +24,6 @@ def Analyse_Hough(image):
     # seuillage d'otsu sur l'image de base
     ret, thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
     
-
     # a la base thresh vaut 0 ou 256, plus maitenant (0 1) 
     thresh01 = thresh > 200
 
@@ -32,7 +32,6 @@ def Analyse_Hough(image):
     # selectionne ce qu'otsu selectionne
     graynew = gray.copy()
     graynew = gray*thresh01
-
     
     # detecte laser + elargit autour    
 #    img_vert = Detect_laser(image)
@@ -43,7 +42,7 @@ def Analyse_Hough(image):
     
     carre = np.zeros(gray.shape)
     for i in range(150,450):
-        for j in range(300,600):
+        for j in range(260,640):
             carre[i,j] =1
         
 
@@ -52,6 +51,7 @@ def Analyse_Hough(image):
     # on isole la partie qui ete selectionnee par otsu et qui est proche du laser
     graynew2 = graynew.copy()
     graynew2 = graynew*carre
+    plt.imshow(graynew2,cmap = plt.cm.gray)
     
     
 
@@ -63,19 +63,31 @@ def Analyse_Hough(image):
 
     # Applique transformee de Hough , voir doc pour les parametres
     circles = cv2.HoughCircles(graynew_flou,cv2.cv.CV_HOUGH_GRADIENT,1,20,
-                            param1=50,param2=27,minRadius=50,maxRadius=150)
+                            param1=50,param2=27,minRadius=30,maxRadius=120)
                             
 
 
     # verifie qu'il y a au moins un cercle, puis les compte
-    sum = 0
-    if circles is not None:
-        circles = np.uint16(np.around(circles))
-        for i in circles[0,:]:
-            sum += 1
-
-    return sum
-
+#    sum = 0
+#    if circles is not None:
+#        circles = np.uint16(np.around(circles))
+#        for i in circles[0,:]:
+#            sum += 1
+#
+#    return sum
+#    
+    #affiche les cercles
+#    if circles != None:
+#        circles = np.uint16(np.around(circles))
+#        for i in circles[0,:]:
+#        # draw the outer circle
+#            cv2.circle(image,(i[0],i[1]),i[2],(0,255,0),2)
+#        # draw the center of the circle
+#            cv2.circle(image,(i[0],i[1]),2,(0,0,255),3)
+#
+#    cv2.imshow('detected circles',image)
+    
+    return circles
 
 
 
@@ -137,3 +149,6 @@ def tranche_image(image,l):
                     for s in range(i-20,i+20):
                         image_copy[s,j] =1
     return image_copy
+
+img = cv2.imread('images//image277.png')
+Analyse_Hough(img)
