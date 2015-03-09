@@ -53,14 +53,18 @@ def extreme_points(coord):
 
     
     
-img = cv2.imread('images//image278.png')
+img = cv2.imread('Images_Polypes//Polyps//image3284.png')
 laser = Detect_laser(img)
-circle = Fonctions_Analyse_Hough.Analyse_Hough(img)
+#circle = Fonctions_Analyse_Hough.Analyse_Hough(img)
+#if circle != None:
+#    center_x = circle[0,0,0]
+#    center_y = circle[0,0,1]
+#    radius = circle[0,0,2]
+#    coord =  laser_on_polyp(laser,center_x,center_y,radius)
+#    points = extreme_points(coord)
+#    print points
+
+plt.subplot(2,1,1)
+plt.imshow(laser)
+plt.subplot(2,1,2)
 plt.imshow(img)
-if circle != None:
-    center_x = circle[0,0,0]
-    center_y = circle[0,0,1]
-    radius = circle[0,0,2]
-    coord =  laser_on_polyp(laser,center_x,center_y,radius)
-    points = extreme_points(coord)
-    print points

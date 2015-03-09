@@ -161,5 +161,15 @@ Réunion avec Mertens :
 
 Discussion de l'avancement du projet === > c'est de la recherche : faire le mieux possible, mais il n'y a pas de miracles.
 
+06/03/2015
+
+- Peut-être on va plus partir du laser et ses caractéristiques sur le polype rond, puis on va vérifier si le laser se trouve sur le polype
+	Propriétés du laser sur polype : élargissement et/ou brillance?
+
+- Pour avoir plus de probabilité d'obtenir un cercle contournant le polype, on va faire un Hough plus large (jouer sur les 2 premiers paramètres) puis éliminer les candidats pour trouver le bon.
+Pour éliminer les cercles excédentaires:
+	- différence à l'intérieur et extérieur du cercle (à un rayon de rpport plus grand). Si différence entre les 2 dépasse un certain seuil, on peut dire que c'est le cercle du polype.
+		Prob : quand cercle à l'extérieur du polype
+	- comparer le total de niveau de gris de chaque cercle pondéré par la taille. On suppose qu'on n'aura pas de cercle petit autour de la partie brillante du laser (pas de forme ronde autour donc pas de raison d'avoir un cercle entourant juste la partie brillante)
 
 

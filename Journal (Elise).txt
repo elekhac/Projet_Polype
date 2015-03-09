@@ -88,3 +88,62 @@ Rem :
 - Ici, nous avons concentré le traitement sur la zone du polype mais celle-ci étant déjà bien contrastée, nous n'avons pas appliqué de normalisation
 - Pour des images dans lesquelles le laser est sur les bords du polype (bords extérieur et intérieur) par exemple, on détecte 2 pics. Cependant, ces images ne sont pas intéressantes car le profil ne donnera pas grand chose.
 - A voir si le watershed est nécessaire. En effet, il permet d'avoir une couleur uniforme pour chaque objet mais nous avons déjà une bonne distinction des objets après le filtre médian
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+16/02-22/02
+
+Objet : Application d'un SIFT?
+
+Dans un document fourni par Mertens sur la détection de polype (sans laser), une des techniques utilisées est le SURF, une méthode par détection de points caractéristiques.
+SIFT est une technique semblable au SURF. 
+A noter qu'il faut détecter les points caractéristiques d'images modèles, comparer ces points et des d'images tests et regarder la transformation (de correspondance déjà implémentée en Python ou bien trouver la transformation
+affine qui lie les deux groupes de points via une fonction également implémentée en Python).
+Ici, on a  juste détecté les points caractéristiques des plusieurs images et nous les avons visualisé. Dans un cas typique où le SIFT est efficace, on devrait avoir des points au niveau des coins surtout, quelques-uns sur les arêtes et le reste (peu de points)
+sur certaines parties propres à l'objet (propriété intrinsèque de l'objet, difficile à deviner par soi-même). Or dans le cas des polypes ronds, on a des points un peu partout, beaucoup sur le laser mais peu sur le polype en tant que tel.
+ Bien sûr, pour montrer que le SIFT n'est pas trop efficace dans notre cas, il faudrait faire tout le cheminement de détection de points caractéristiques avec les fonctions de correspondance (ce qu'on n'a pas fait).
+
+Lors de la réunion avec Debeir, il nous a expliqué que vu que le polype est rond et n'a donc pas de bords saillants (coins, arêtes bien déterminées), le SIFT donne beaucoup moins de points caractéristiques.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+23/02 - 01/03
+
+Objet : transformée d'Hough
+
+voir code
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+07/03-08/03
+
+Objet : détection laser + tranche image + détection de cercles d'Hough candidats + élimination des cercles jusqu'à avoir le bon
+
+Prob rencontré avant : difficile de trouver les bons paramètres (surtout le 1 et 2 de la transformée d'Hough d'opencv) pour trouver le bon cercle entourant le polype => transformée d'Hough à paramètres plus "bas" pour avoir plusieurs
+candidats "cercles" et élimination des cercles excédentaires.
+
+1/ on détecte le laser. Ici on le détecte selon sa saturation et valeur en convertissant l'image en HSV.
+2/ on construit une tranche autour de ce laser. Ici on élargit la zone horizontalement et verticalement
+PROB: élargissement se fait plus grand d'un côté que de l'autre.
+3/ Masque 
+pas nécessaire si tranche est bien faite, mais ici on l'a laissé car la tranche est trop élargie. Une fois le problème résolu, on pourra enlevé le masque
+Intéret du masque : pour toutes les boucles i et j qui parcourt l'image, on peut réduire les boucles à la taille du masque
+4/ Otsu et filtre médian
+5/ Détection de cercles via Hough. Ici, on diminue les paramètres 1 et 2 pour avoir de nombreux candidats.
+6/ Critère pour retenir le bon cercle. On fait le total de niveau de gris de l'aire de chaque cercle qu'on pondère par la taille
+Dans le code, pour trouver les coordonnées des points dans le cercle, on aurait pu utiliser 
+for r in range (radius)
+	for theta in range (2*math.pi):
+       		 x = r * math.cos(theta) + center_x
+       		 y = r * math.sin(theta) + center_y
+pas possible de faire un range avec des float => sol : np.around
+x et y ne seront pas nécessairement des entiers et ne vont pas forcément correspondre à des positions de pixels. Il existe sûrement un moyen pour faire correspondre x et y avec les positions de pixels
+mais on va plutôt parcourir l'image et vérifier que ((j - center_x)**2 + (i - center_y)**2 < radius**2):
+En effet, si on garde le masque, faire une double boucle pour parcourir l'image équivaut plus ou moins à faire la double boucle sur le rayon et l'angle.
+
+Résultats : Ca marche (5 tests) A remarquer que dans les  cas testés, le bon cercle (celui entourant le polype) est le cerlce le plus "probable" à trouver donc il se retrouve en t^te de la liste des cercles.
+	On pourrait alors juste prendre le premier cercle de la liste pour dire que c'est le bon cercle. Bien sûr, l'approche via 6/ permet d'avoir une approche plus rigoureuse.
+	Ex. image 13 où le bon polype est le 4ème de la liste. Attention dans cette image, le cercle prend tout le polype (pied compris)
+	A noter également que dans les cas où le laser n'est pas sur le polype, cette méthode permet égaement de trouver le cercle du polype
+
+PRob à résoudre : voir 2/
+		Aussi, quand on fait la transformée d'Hough sur l'image tranche du laser (avec ou sans masque), on ne détecte plus rien (????????????????)
+		En attendant, on a juste appliquer le transformée d'hough sur l'image sans la détection et la tranche du laser (donc juste 3/ et 4/)

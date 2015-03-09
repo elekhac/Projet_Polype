@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 
 # le nom de fichier texte contenant les coordonées du graph
 
-fichier_txt = "vertex1.txt"
+fichier_txt = "video0.avivertex2015-02-28-0-1446.txt"
 
 # fct qui renvoie la liste des points sous forme de vecteurs x et y
 
-x,y = np.loadtxt("C:\Users\Hossein\Desktop\PROJET polypes\\fichiers\\"+fichier_txt,unpack=True)
+x,y = np.loadtxt("fichiers\\"+fichier_txt,unpack=True)
 
 # graph des donnees
 
