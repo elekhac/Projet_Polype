@@ -147,3 +147,20 @@ Résultats : Ca marche (5 tests) A remarquer que dans les  cas testés, le bon cer
 PRob à résoudre : voir 2/
 		Aussi, quand on fait la transformée d'Hough sur l'image tranche du laser (avec ou sans masque), on ne détecte plus rien (????????????????)
 		En attendant, on a juste appliquer le transformée d'hough sur l'image sans la détection et la tranche du laser (donc juste 3/ et 4/)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+28/03
+
+Objet : traitement image avant labelisation et extraction des propriétés
+
+TRAITEMENT DE L'IMAGE
+voir ProcessingForProp
+
+Problème rencontré : sous-segmentation du polype avec laser (laser hors polype collé avec le polype) => solutions:
+	- Hough : trouver cercle sur poype puis élargir la zone en fonction de l'aire du cercle pour obtenir un profil de polype (élargi avec un peu de laser excédent mais qui enlève une partie du laser hors polype)
+	- Ouverture sur l'image binaire après Otsu : permet de bien couper le lien polype-laser hors polype. Mais ne marche que si le lien est fin (ou sinon l'augmentation de l'ouverture va enlever trop d'informations du polype)
+
+EXTRACTION DES PROPRIETES
+voir feature_extraction. Propriétés intéressantes pour détecter polypes : aire/périmètre + max intensity. Propriété orientation intéressant pour avoir l'orientation du polype
+
+

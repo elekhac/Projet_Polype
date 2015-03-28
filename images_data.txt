@@ -1,0 +1,71 @@
+video 0:				x	y
+
+image1		image72		278	260		1
+
+image2		image520	216	205		2
+
+image3		image931	283	192		3
+
+image4		image 1399	225	146
+
+
+
+video0(2):
+
+image1		image15		275	280
+
+image2		image182	246	276
+
+image3		image224	241	297		
+
+image4		image290	233	242
+
+image5		image617	246	317
+
+image6		image642	316	364
+
+image7		image658	262	247		4
+
+image8		image746
+
+image9		image793
+
+image10		image832	316	180
+
+image11		image842	279	238		5
+
+image12		image933
+
+image13		image1383
+
+
+
+video1(2):
+
+image1		image16		279	293		6
+
+image2		image272	266	205		7
+
+image3		image328		
+
+image4		image482	216	167
+
+image5		image929	296	192		8
+
+image6		image964	250	80
+
+image7		image1129	283	230
+
+image8		image1183	
+
+image9		image2110	264	136
+
+
+
+video2:
+
+image1		image405	
+
+image2		image496
+
+
