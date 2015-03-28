@@ -27,16 +27,19 @@ def Detect_laser(image):
     open_laser = laser
     return open_laser
 
+
+
 #def Detect_laser(image):
 #    hsv= col.rgb_to_hsv((image/255.0))
 #
 #    laser = np.zeros(image.shape[:2])
 #    for i in range(laser.shape[0]):
 #        for j in range(laser.shape[1]):
-#            if  hsv[i,j,1]<0.25 and hsv[i,j,2]>0.65:
+#            if  hsv[i,j,1]<0.25 and hsv[i,j,2]>0.85:
 #                laser[i,j] = 1
 #    open_laser = laser
 #    return open_laser
+
     
 def tranche(image,l,largeur):
     image_copy = image.copy()
@@ -51,9 +54,6 @@ def tranche(image,l,largeur):
                             image_copy[i+t,j+s] = 1
     return image_copy
             
-
-    
-
 
 #img = data.imread("image_data\\image0 (1).png")
 #
