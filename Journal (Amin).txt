@@ -113,3 +113,25 @@ mais un carré prédefini à l'avance où on analyse l'image .
 
 Nouveau fichier appellé Fonctions_Analyse_Hough (2)
 
+
+
+----------------------------------------------------------------------------------------------------------------
+
+31/03
+
+Etudier les données en commencant par les infos du laser ==> graph 1D 
+
+==> clusterisation
+
+
+http://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html#example-cluster-plot-cluster-comparison-py
+
+== > meanshift
+
+Compter le nombre de cluster en pré traitement ?
+Si oui, on aurait tout de même trop d'images selectionnés ... Essayer d'extraire des propriétés de chaque cluster ?
+Labeliser chaque cluster pour ensuite faire un watershed dessus ?
+Apprentissage sur les clusters pour savoir lesquels ont plus de chances de représenter un polyp ?
+
+pb distance euclidienne meilleure ...
+
